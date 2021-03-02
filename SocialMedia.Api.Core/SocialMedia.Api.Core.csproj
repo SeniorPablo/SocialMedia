@@ -6,8 +6,11 @@
 
   <ItemGroup>
     <Folder Include="Enumerations\" />
-    <Folder Include="DTOs\" />
     <Folder Include="Exceptions\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
   </ItemGroup>
 
 </Project>

@@ -2,9 +2,7 @@
 using SocialMedia.Api.Core.Entities;
 using SocialMedia.Api.Core.Interfaces;
 using SocialMedia.Api.Infrastructure.Data;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SocialMedia.Api.Infrastructure.Repositories
@@ -25,6 +23,12 @@ namespace SocialMedia.Api.Infrastructure.Repositories
         public async Task<Post> GetPost(int id)
         {
             return await _context.Posts.FirstOrDefaultAsync(p => p.PostId == id);
+        }
+
+        public async Task AddPost(Post entity)
+        {
+            _context.Posts.Add(entity);
+            await _context.SaveChangesAsync();
         }
     }
 }

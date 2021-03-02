@@ -8,5 +8,7 @@ namespace SocialMedia.Api.Core.Interfaces
     {
         Task<IEnumerable<Post>> GetPosts();
         Task<Post> GetPost(int id);
+        Task AddPost(Post entity);
+
     }
 }
