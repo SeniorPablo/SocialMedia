@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using SocialMedia.Api.Core.DTOs;
+using System;
 
 namespace SocialMedia.Api.Infrastructure.Validators
 {
@@ -10,6 +11,10 @@ namespace SocialMedia.Api.Infrastructure.Validators
             RuleFor(post => post.Description)
                 .NotNull()
                 .Length(10, 15);
+
+            RuleFor(post => post.Date)
+                .NotNull()
+                .LessThanOrEqualTo(DateTime.Now);
         }
     }
 }
