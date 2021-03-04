@@ -1,8 +1,10 @@
 ﻿using SocialMedia.Api.Core.Entities;
+using SocialMedia.Api.Core.Exceptions;
 using SocialMedia.Api.Core.Interfaces;
 using SocialMedia.Api.Core.Interfaces.Services;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SocialMedia.Api.Core.Services
@@ -15,9 +17,9 @@ namespace SocialMedia.Api.Core.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<Post>> GetPosts()
+        public IEnumerable<Post> GetPosts()
         {
-            return await _unitOfWork.PostRepository.GetAll();
+            return _unitOfWork.PostRepository.GetAll();
         }
 
         public async Task<Post> GetPost(int id)
@@ -30,18 +32,31 @@ namespace SocialMedia.Api.Core.Services
             var user = await _unitOfWork.UserRepository.GetById(entity.UserId);
             if(user == null)
             {
-                throw new Exception("El usuario no existe");
+                throw new BussinesException("El usuario no existe");
             }
+
+            var userPost = await _unitOfWork.PostRepository.GetPostsByUser(entity.UserId);
+            if(userPost.Count() < 10)
+            {
+                var lastPost = userPost.OrderByDescending(u => u.Date).FirstOrDefault();
+                if((DateTime.Now - lastPost.Date).TotalDays < 7)
+                {
+                    throw new BussinesException("No estás habilitado para publicar");
+                }
+            }
+
             if(entity.Description.Contains("Sexo"))
             {
-                throw new Exception("Contenido no permitido");
+                throw new BussinesException("Contenido no permitido");
             }
             await _unitOfWork.PostRepository.Add(entity);
+            await _unitOfWork.SaveChangeAsync();
         }
 
         public async Task<bool> UpdatePost(Post entity)
         {
-            await _unitOfWork.PostRepository.Update(entity);
+            _unitOfWork.PostRepository.Update(entity);
+            await _unitOfWork.SaveChangeAsync();
             return true;
         }
 
