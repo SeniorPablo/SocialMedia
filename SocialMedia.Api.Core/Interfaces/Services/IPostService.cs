@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SocialMedia.Api.Core.Interfaces
+namespace SocialMedia.Api.Core.Interfaces.Services
 {
-    public interface IPostRepository
+    public interface IPostService
     {
         Task<IEnumerable<Post>> GetPosts();
         Task<Post> GetPost(int id);
