@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SocialMedia.Api.Core.Interfaces;
 using SocialMedia.Api.Core.Interfaces.Repository;
 using SocialMedia.Api.Core.Interfaces.Services;
 using SocialMedia.Api.Core.Services;
@@ -41,6 +42,10 @@ namespace SocialMedia.Api
             services.AddDbContext<SocialMediaContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("SocialMedia"))
             );
+
+            //Generic
+            services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
 
             //Service dependencies
             services.AddTransient<IPostService, PostService>();

@@ -22,7 +22,7 @@ namespace SocialMedia.Api.Infrastructure.Repositories
 
         public async Task<Post> GetPost(int id)
         {
-            return await _context.Posts.FirstOrDefaultAsync(p => p.PostId == id);
+            return await _context.Posts.FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task AddPost(Post entity)
@@ -33,7 +33,7 @@ namespace SocialMedia.Api.Infrastructure.Repositories
 
         public async Task<bool> UpdatePost(Post post)
         {
-            var currentPost = await GetPost(post.PostId);
+            var currentPost = await GetPost(post.Id);
             currentPost.Date = post.Date;
             currentPost.Description = post.Description;
             currentPost.ImageUrl = post.ImageUrl;
