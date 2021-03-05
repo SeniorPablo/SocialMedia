@@ -2,6 +2,7 @@
 using SocialMedia.Api.Core.Exceptions;
 using SocialMedia.Api.Core.Interfaces;
 using SocialMedia.Api.Core.Interfaces.Services;
+using SocialMedia.Api.Core.QueryFilters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,9 +18,22 @@ namespace SocialMedia.Api.Core.Services
             _unitOfWork = unitOfWork;
         }
 
-        public IEnumerable<Post> GetPosts()
+        public IEnumerable<Post> GetPosts(PostQueryFilter filters)
         {
-            return _unitOfWork.PostRepository.GetAll();
+            var posts = _unitOfWork.PostRepository.GetAll();
+            if(filters.UserId != null)
+            {
+                posts = posts.Where(p => p.UserId == filters.UserId);
+            }
+            if (filters.Date != null)
+            {
+                posts = posts.Where(p => p.Date.ToShortDateString() == filters.Date?.ToShortDateString());
+            }
+            if (filters.Description != null)
+            {
+                posts = posts.Where(p => p.Description.ToLower().Contains(filters.Description.ToLower()));
+            }
+            return posts;
         }
 
         public async Task<Post> GetPost(int id)
