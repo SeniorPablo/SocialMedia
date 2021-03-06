@@ -1,4 +1,5 @@
-﻿using SocialMedia.Api.Core.Entities;
+﻿using SocialMedia.Api.Core.Custom;
+using SocialMedia.Api.Core.Entities;
 using SocialMedia.Api.Core.Exceptions;
 using SocialMedia.Api.Core.Interfaces;
 using SocialMedia.Api.Core.Interfaces.Services;
@@ -18,22 +19,27 @@ namespace SocialMedia.Api.Core.Services
             _unitOfWork = unitOfWork;
         }
 
-        public IEnumerable<Post> GetPosts(PostQueryFilter filters)
+        public PagedList<Post> GetPosts(PostQueryFilter filters)
         {
             var posts = _unitOfWork.PostRepository.GetAll();
+
             if(filters.UserId != null)
             {
                 posts = posts.Where(p => p.UserId == filters.UserId);
             }
+
             if (filters.Date != null)
             {
                 posts = posts.Where(p => p.Date.ToShortDateString() == filters.Date?.ToShortDateString());
             }
+
             if (filters.Description != null)
             {
                 posts = posts.Where(p => p.Description.ToLower().Contains(filters.Description.ToLower()));
             }
-            return posts;
+
+            var pagedPosts = PagedList<Post>.Create(posts, filters.PageNumber, filters.PageSize);
+            return pagedPosts;
         }
 
         public async Task<Post> GetPost(int id)
