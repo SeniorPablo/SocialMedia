@@ -1,17 +1,21 @@
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SocialMedia.Api.Core.Custom;
 using SocialMedia.Api.Core.Interfaces;
 using SocialMedia.Api.Core.Interfaces.Repository;
 using SocialMedia.Api.Core.Interfaces.Services;
 using SocialMedia.Api.Core.Services;
 using SocialMedia.Api.Infrastructure.Data;
 using SocialMedia.Api.Infrastructure.Filters;
+using SocialMedia.Api.Infrastructure.Interfaces;
 using SocialMedia.Api.Infrastructure.Repositories;
+using SocialMedia.Api.Infrastructure.Services;
 using System;
 
 namespace SocialMedia.Api
@@ -37,11 +41,14 @@ namespace SocialMedia.Api
             }).AddNewtonsoftJson(options =>
             {
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
             })
             .ConfigureApiBehaviorOptions(options =>
             {
                 //options.SuppressModelStateInvalidFilter = true;
             });
+
+            services.Configure<PaginationOptions>(Configuration.GetSection("Pagination"));
 
             services.AddDbContext<SocialMediaContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("SocialMedia"))
@@ -53,6 +60,13 @@ namespace SocialMedia.Api
 
             //Service dependencies
             services.AddTransient<IPostService, PostService>();
+            services.AddSingleton<IUriService>(provider =>
+            {
+                var accessor = provider.GetRequiredService<IHttpContextAccessor>();
+                var request = accessor.HttpContext.Request;
+                var absoluteUri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent());
+                return new UriService(absoluteUri);
+            });
 
             //Repository dependencies
             services.AddTransient<IPostRepository, PostRepository>();
