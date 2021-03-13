@@ -12,16 +12,16 @@ namespace SocialMedia.Api.Infrastructure.Repositories
         private readonly IPostRepository _postRepository;
         private readonly IRepository<User> _userRepository;
         private readonly IRepository<Comment> _commentRepository;
+        private readonly ISecurityRepository _securityRepository;
 
         public UnitOfWork(SocialMediaContext context)
         {
             _context = context;
         }
         public IPostRepository PostRepository => _postRepository ?? new PostRepository(_context);
-
         public IRepository<User> UserRepository => _userRepository ?? new BaseRepository<User>(_context);
-
         public IRepository<Comment> CommentRepository => _commentRepository ?? new BaseRepository<Comment>(_context);
+        public ISecurityRepository SecurityRepository => _securityRepository ?? new SecurityRepository(_context);
 
         public void Dispose()
         {
@@ -31,7 +31,7 @@ namespace SocialMedia.Api.Infrastructure.Repositories
             }
         }
 
-        public async Task SaveChangeAsync()
+        public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
         }

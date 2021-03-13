@@ -76,13 +76,13 @@ namespace SocialMedia.Api.Core.Services
                 throw new BussinesException("Contenido no permitido");
             }
             await _unitOfWork.PostRepository.Add(entity);
-            await _unitOfWork.SaveChangeAsync();
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task<bool> UpdatePost(Post entity)
         {
             _unitOfWork.PostRepository.Update(entity);
-            await _unitOfWork.SaveChangeAsync();
+            await _unitOfWork.SaveChangesAsync();
             return true;
         }
 
