@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +17,7 @@ using SocialMedia.Api.Core.Services;
 using SocialMedia.Api.Infrastructure.Data;
 using SocialMedia.Api.Infrastructure.Filters;
 using SocialMedia.Api.Infrastructure.Interfaces;
+using SocialMedia.Api.Infrastructure.Options;
 using SocialMedia.Api.Infrastructure.Repositories;
 using SocialMedia.Api.Infrastructure.Services;
 using System;
@@ -65,6 +65,7 @@ namespace SocialMedia.Api
             //Generic
             services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddSingleton<IPasswordService, PasswordService>();
 
             //Service dependencies
             services.AddTransient<IPostService, PostService>();

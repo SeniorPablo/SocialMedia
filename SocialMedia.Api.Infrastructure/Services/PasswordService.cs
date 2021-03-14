@@ -7,7 +7,7 @@ using System.Security.Cryptography;
 
 namespace SocialMedia.Api.Infrastructure.Services
 {
-    public class PasswordService : IPasswordHasher
+    public class PasswordService : IPasswordService
     {
         private readonly PasswordOptions _options;
         public PasswordService(IOptions<PasswordOptions> options)
@@ -16,7 +16,7 @@ namespace SocialMedia.Api.Infrastructure.Services
         }
         public bool Check(string hash, string password)
         {
-            var parts = hash.Split('.', 3);
+            var parts = hash.Split('.');
             if(parts.Length != 3)
             {
                 throw new FormatException("Unexpected hash format");

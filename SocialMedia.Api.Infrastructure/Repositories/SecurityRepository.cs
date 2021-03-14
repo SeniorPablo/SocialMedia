@@ -12,7 +12,7 @@ namespace SocialMedia.Api.Infrastructure.Repositories
 
         public async Task<Security> GetLoginByCredentials(UserLogin login)
         {
-            return await _entities.FirstOrDefaultAsync(s => s.User == login.User && s.Password == login.Password);
+            return await _entities.FirstOrDefaultAsync(s => s.User == login.User);
         }
     }
 }
