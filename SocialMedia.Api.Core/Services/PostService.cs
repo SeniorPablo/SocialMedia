@@ -81,7 +81,10 @@ namespace SocialMedia.Api.Core.Services
 
         public async Task<bool> UpdatePost(Post entity)
         {
-            _unitOfWork.PostRepository.Update(entity);
+            var post = await _unitOfWork.PostRepository.GetById(entity.Id);
+            post.ImageUrl = entity.ImageUrl;
+            post.Description = entity.Description;
+            _unitOfWork.PostRepository.Update(post);
             await _unitOfWork.SaveChangesAsync();
             return true;
         }
@@ -89,6 +92,7 @@ namespace SocialMedia.Api.Core.Services
         public async Task<bool> DeletePost(int id)
         {
             await _unitOfWork.PostRepository.Delete(id);
+            await _unitOfWork.SaveChangesAsync();
             return true;
         }
     }
